@@ -36,7 +36,10 @@ export async function POST(req: NextRequest) {
     raw_message: message,
     intent: parsed.intent,
     confidence: parsed.confidence,
+    offered_qty_kg: parsed.qty,
+    price_per_kg: parsed.price_per_unit,
   });
+
 
   if (parsed.intent === "offer" && parsed.qty && parsed.price_per_unit) {
     await db.from("applications").upsert(

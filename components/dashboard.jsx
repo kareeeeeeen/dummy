@@ -114,9 +114,9 @@ export default function Dashboard() {
     const [{ data: ranked }, { data: inbound }] = await Promise.all([
       supabase.from("ranked_applications").select("*").eq("demand_item_id", itemId),
       supabase.from("wa_inbound_log")
-        .select("id, raw_message, intent, received_at, farmers(name, kecamatan)")
-        .eq("demand_item_id", itemId)
-        .order("received_at", { ascending: false }),
+      .select("id, raw_message, intent, offered_qty_kg, price_per_kg, received_at, farmers(name, kecamatan)")
+      .eq("demand_item_id", itemId)
+      .order("received_at", { ascending: false }),
     ]);
     const rows = (ranked || [])
       .map((r) => ({
@@ -140,9 +140,10 @@ export default function Dashboard() {
       [id]: (inbound || []).map((m) => ({
         kind: m.intent === "offer" ? "offer" : m.intent === "decline" ? "decline" : "unclear",
         farmer: { id: "in" + m.id, name: m.farmers?.name || "Petani", desa: m.farmers?.kecamatan || "" },
-        qty: null, harga: null, text: m.raw_message, key: "in" + m.id,
+        qty: m.offered_qty_kg, harga: m.price_per_kg, text: m.raw_message, key: "in" + m.id,
       })),
     }));
+
   }, [supabase]);
 
   const broadcastLive = useCallback(async (ing) => {
