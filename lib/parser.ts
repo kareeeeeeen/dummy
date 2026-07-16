@@ -49,8 +49,8 @@ export async function parseFarmerReply(message: string): Promise<ParsedReply> {
       const result = await model.generateContent(message);
       const parsed = JSON.parse(result.response.text());
       if (isValid(parsed)) return parsed;
-    } catch {
-      /* fall through to regex — never let a demo die on an API hiccup */
+    } catch (err) {
+      console.error("Gemini parse failed, falling back to regex:", err);
     }
   }
   return regexFallback(message);
@@ -73,11 +73,21 @@ function regexFallback(msg: string): ParsedReply {
     return { intent: "question", qty: null, price_per_unit: null, commodity: null, confidence: 0.6 };
 
   const qty = m.match(/(\d+(?:\.\d+)?)\s*(?:kg|kilo|ikat|buah)?\b/);
-  const price = m.match(/(\d+(?:\.\d+)?)\s*(?:rb|ribu|k\b|000)/);
-  if (qty && price) {
-    let p = parseFloat(price[1]);
-    if (/rb|ribu|k\b/.test(price[0])) p *= 1000;
-    return { intent: "offer", qty: parseFloat(qty[1]), price_per_unit: p, commodity: null, confidence: 0.5 };
+
+  // Try shorthand first ("9rb", "9 ribu", "9k") — always multiply by 1000
+  const shorthand = m.match(/(\d+(?:\.\d+)?)\s*(rb|ribu|k\b)/);
+  // Then a plain 3+ digit number as an already-full price ("8000", "10000")
+  const plainPrice = m.match(/\b(\d{3,6})\b/);
+
+  let priceVal: number | null = null;
+  if (shorthand) {
+    priceVal = parseFloat(shorthand[1]) * 1000;
+  } else if (plainPrice) {
+    priceVal = parseFloat(plainPrice[1]);
+  }
+
+  if (qty && priceVal !== null) {
+    return { intent: "offer", qty: parseFloat(qty[1]), price_per_unit: priceVal, commodity: null, confidence: 0.5 };
   }
   return { intent: "unclear", qty: null, price_per_unit: null, commodity: null, confidence: 0.2 };
 }
