@@ -1,0 +1,50 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { background: #E8E2C8; }
+
+.tsppg-root {
+  --bg: #F4EFD9; --bg-alt: #EAE2BE; --card: #FBF8EC; --ink: #1C2B1E; --ink-soft: #55624E;
+  --sawah: #2F4A34; --sawah-deep: #203327; --gold: #D9A62E; --gold-deep: #B9841A;
+  --clay: #B0522C; --line: #DACD9C; --green-ok: #3D7A4C;
+  font-family: var(--font-worksans), sans-serif;
+  background: var(--bg); color: var(--ink);
+  border-radius: 14px; max-width: 1180px; margin: 18px auto; overflow: hidden;
+}
+.tsppg-root h1, .tsppg-root h2, .tsppg-root h3, .tsppg-root .num {
+  font-family: var(--font-fraunces), serif;
+}
+.mono { font-family: var(--font-spacemono), monospace; }
+.tsppg-root a { color: inherit; }
+
+.plain-input {
+  font-family: inherit; background: transparent; border: none;
+  border-bottom: 2px dashed var(--line); color: inherit; padding: 2px;
+}
+.plain-input:focus { outline: none; border-bottom-color: var(--gold); }
+.plain-input.num { font-family: var(--font-fraunces), serif; }
+
+.field-label {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--ink-soft); font-weight: 700; display: block; margin-bottom: 4px;
+}
+.field-input {
+  width: 100%; border: 1.5px solid var(--line); background: var(--card);
+  border-radius: 8px; padding: 8px 10px; font-size: 13px; font-family: inherit; color: var(--ink);
+}
+.field-input:focus { outline: none; border-color: var(--gold); }
+
+.btn {
+  border: none; border-radius: 999px; padding: 11px 20px; font-weight: 700;
+  font-size: 13.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  font-family: inherit;
+}
+.btn-primary { background: var(--gold); color: #2A1D06; }
+.btn-primary:hover { background: var(--gold-deep); }
+.btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+.btn-outline { background: transparent; border: 1.5px solid rgba(244,239,217,.5); color: #F4EFD9; }
+.btn-ghost { background: transparent; border: 1.5px solid var(--line); color: var(--ink-soft); padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; }
+.btn-danger { background: transparent; border: 1.5px solid var(--clay); color: var(--clay); padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tsppg-root * { animation: none !important; transition: none !important; }
+}
